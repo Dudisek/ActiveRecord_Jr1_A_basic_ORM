@@ -1,22 +1,24 @@
+require 'byebug'
 class Student < Database::Model
-  def self.all
-    Database::Model.execute("SELECT * FROM students").map do |row|
-      Student.new(row)
-    end
-  end
+  # def self.all
+  #   Database::Model.execute("SELECT * FROM students").map do |row|
+  #     Student.new(row)
+  #   end
+  # end
 
-  def self.create(attributes)
-    record = self.new(attributes)
-    record.save
+  # def self.create(attributes)
+  #   record = self.new(attributes)
+  #   record.save
 
-    record
-  end
+  #   record
+  # end
 
-  def self.where(query, *args)
-    Database::Model.execute("SELECT * FROM students WHERE #{query}", *args).map do |row|
-      Student.new(row)
-    end
-  end
+  # def self.where(query, *args)
+  #   byebug
+  #   Database::Model.execute("SELECT * FROM students WHERE #{query}", *args).map do |row|
+  #     Student.new(row)
+  #   end
+  # end
 
   def self.find(pk)
     self.where('id = ?', pk).first
@@ -63,18 +65,18 @@ class Student < Database::Model
   end
 
   # e.g., student['first_name'] #=> 'Steve'
-  def [](attribute)
-    raise_error_if_invalid_attribute!(attribute)
+  # def [](attribute)
+  #   raise_error_if_invalid_attribute!(attribute)
 
-    @attributes[attribute]
-  end
+  #   @attributes[attribute]
+  # end
 
   # e.g., student['first_name'] = 'Steve'
-  def []=(attribute, value)
-    raise_error_if_invalid_attribute!(attribute)
+  # def []=(attribute, value)
+  #   raise_error_if_invalid_attribute!(attribute)
 
-    @attributes[attribute] = value
-  end
+  #   @attributes[attribute] = value
+  # end
 
   def cohort
     Cohort.where('id = ?', self[:cohort_id]).first

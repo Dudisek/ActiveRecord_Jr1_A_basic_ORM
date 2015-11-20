@@ -5,6 +5,7 @@ module Database
   class NotConnectedError < StandardError;end
 
   class Model
+    ##JR1
 
     def initialize(attributes = {})
     attributes.symbolize_keys!
@@ -20,20 +21,62 @@ module Database
     end
 
     @old_attributes = @attributes.dup
-  end
-
-  def save
-    if new_record?
-      results = insert!
-    else
-      results = update!
     end
 
-    # When we save, remove changes between new and old attributes
-    @old_attributes = @attributes.dup
+    # def self.all
+    #   Database::Model.execute("SELECT * FROM #{self.class}").map do |row|
+    #     "#<#{self.class} (#{key})"
+    #   end
+    # end
 
-    results
-  end
+    def save
+      if new_record?
+        results = insert!
+      else
+        results = update!
+      end
+
+      # When we save, remove changes between new and old attributes
+      @old_attributes = @attributes.dup
+
+      results
+    end
+
+    def [](attribute)
+      raise_error_if_invalid_attribute!(attribute)
+
+      @attributes[attribute]
+    end
+
+    def []=(attribute, value)
+      raise_error_if_invalid_attribute!(attribute)
+
+      @attributes[attribute] = value
+    end
+
+    #JR2
+
+    def self.all
+      Database::Model.execute("SELECT * FROM " + "#{self}s").map do |row|
+        self.new(row)
+      end
+    end
+
+    def self.create(attributes)
+      record = self.new(attributes)
+      record.save
+
+      record
+    end
+
+    def self.where(query, *args)
+      Database::Model.execute("SELECT * FROM #{self}s WHERE #{query}", *args).map do |row|
+        self.new(row)
+      end
+    end
+
+
+    #END JR2
 
     def self.inherited(klass)
     end

@@ -1,22 +1,22 @@
 class Cohort < Database::Model
-  def self.all
-    Database::Model.execute("SELECT * FROM cohorts").map do |row|
-      Cohort.new(row)
-    end
-  end
+  # def self.all
+  #   Database::Model.execute("SELECT * FROM cohorts").map do |row|
+  #     Cohort.new(row)
+  #   end
+  # end
 
-  def self.create(attributes)
-    record = self.new(attributes)
-    record.save
+  # def self.create(attributes)
+  #   record = self.new(attributes)
+  #   record.save
 
-    record
-  end
+  #   record
+  # end
 
-  def self.where(query, *args)
-    Database::Model.execute("SELECT * FROM cohorts WHERE #{query}", *args).map do |row|
-      Cohort.new(row)
-    end
-  end
+  # def self.where(query, *args)
+  #   Database::Model.execute("SELECT * FROM cohorts WHERE #{query}", *args).map do |row|
+  #     Cohort.new(row)
+  #   end
+  # end
 
   def self.find(pk)
     self.where('id = ?', pk).first
@@ -40,17 +40,17 @@ class Cohort < Database::Model
   #   @old_attributes = @attributes.dup
   # end
 
-  def [](attribute)
-    raise_error_if_invalid_attribute!(attribute)
+  # def [](attribute)
+  #   raise_error_if_invalid_attribute!(attribute)
 
-    @attributes[attribute]
-  end
+  #   @attributes[attribute]
+  # end
 
-  def []=(attribute, value)
-    raise_error_if_invalid_attribute!(attribute)
+  # def []=(attribute, value)
+  #   raise_error_if_invalid_attribute!(attribute)
 
-    @attributes[attribute] = value
-  end
+  #   @attributes[attribute] = value
+  # end
 
   def students
     Student.where('cohort_id = ?', self[:id])
