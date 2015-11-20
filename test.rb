@@ -28,4 +28,8 @@ require_relative "app"
 
 # p Cohort.find(1)[:name] == "Best Cohort Ever"
 #
+# student = Student
+# student.update!
+# p Student.find(5)
+
 

@@ -5,7 +5,7 @@ module Database
   class NotConnectedError < StandardError;end
 
   class Model
-    ##JR1
+    #====================JR1
 
     def initialize(attributes = {})
     attributes.symbolize_keys!
@@ -54,7 +54,7 @@ module Database
       @attributes[attribute] = value
     end
 
-    #JR2
+    #====================JR2
 
     def self.all
       Database::Model.execute("SELECT * FROM " + "#{self}s").map do |row|
@@ -75,8 +75,46 @@ module Database
       end
     end
 
+    def self.find(pk)
+      self.where('id = ?', pk).first
+    end  
 
-    #END JR2
+    def new_record?_
+      self[:id].nil?
+    end
+
+    private
+    def insert!
+      self[:created_at] = DateTime.now
+      self[:updated_at] = DateTime.now
+
+      fields = self.attributes.keys
+      values = self.attributes.values
+      marks  = Array.new(fields.length) { '?' }.join(',')
+
+      insert_sql = "INSERT INTO #{self}s (#{fields.join(',')}) VALUES (#{marks})"
+
+      results = Database::Model.execute(insert_sql, *values)
+
+      # This fetches the new primary key and updates this instance
+      self[:id] = Database::Model.last_insert_row_id
+      results
+    end
+
+    def update!
+      self[:updated_at] = DateTime.now
+
+      fields = self.attributes.keys
+      values = self.attributes.values
+
+      update_clause = fields.map { |field| "#{field} = ?" }.join(',')
+      update_sql = "UPDATE #{self}s SET #{update_clause} WHERE id = ?"
+
+      # We have to use the (potentially) old ID attribute in case the user has re-set it.
+      Database::Model.execute(update_sql, *values, self.old_attributes[:id])
+    end  
+
+    #===================END JR2
 
     def self.inherited(klass)
     end
